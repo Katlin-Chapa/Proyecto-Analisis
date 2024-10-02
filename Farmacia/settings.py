@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'Autenticacion',
+    'Inicio',
 ]
 
 # Creación de token autenticacion
@@ -134,7 +136,7 @@ STATICFILES_DIRS = ['static/', BASE_DIR]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#AUTH_USER_MODEL = 'AutenticacionPersonalizada.AutenticacionUsuario'
-#LOGIN_REDIRECT_URL = 'sesion'
-#LOGIN_URL = 'auth/login'
-#LOGOUT_REDIRECT_URL = 'inicio'
+AUTH_USER_MODEL = 'Autenticacion.AutenticacionUsuario'
+LOGIN_REDIRECT_URL = 'sesion'
+LOGIN_URL = 'auth/login'
+LOGOUT_REDIRECT_URL = 'inicio'

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+<!-- Define el título de la página -->
+{% block title %}Iniciar Sesión{% endblock %}
+{% block content %}
+<!-- Crea una fila para centrar el contenido -->
+<div class="row justify-content-center">
+    <!-- Columna para la imagen -->
+    <div class="col-md-4 text-center">
+        <img src="https://cdn-icons-png.flaticon.com/512/295/295128.png" class="img-fluid" style="max-width: 100%; height: auto; max-height: 200px;">
+    </div>
+    <!-- Columna para el formulario de inicio de sesión -->
+    <div class="col-md-4">
+        <h1 class="mt-3">Iniciar Sesión</h1> <!-- Añadido margen superior -->
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
