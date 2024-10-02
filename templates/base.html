@@ -22,9 +22,6 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">Inicio</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="/acerca/">Acerca de</a>
                     </li>
                     <li class="nav-item">
@@ -32,15 +29,20 @@
                     </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item">
+                            <a class="nav-link" href="/">Inicio</a>
+                        </li>
+                        <li class="nav-item">
                             <form method="POST" action="{% url 'logout' %}" class="form-inline">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-outline-danger nav-link">Cerrar Sesión</button>
                             </form>
                         </li>
                     {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-outline-primary" href="/auth/login">Iniciar Sesión</a>
-                        </li>
+                        {% if request.path != '/auth/login/' %}
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-outline-primary" href="{% url 'login' %}">Iniciar Sesión</a>
+                            </li>
+                        {% endif %}
                     {% endif %}
                 </ul>
             </div>
