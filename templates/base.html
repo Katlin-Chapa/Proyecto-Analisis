@@ -15,7 +15,7 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-light">
-            <a class="navbar-brand logo" href="/">Farmacia</a>
+            <a class="navbar-brand logo" href="/">Farmacia La Mejor</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -49,17 +49,35 @@
         </nav>
     </header>
 
-    <main class="container my-5">
-        <!-- Aquí se mostrará el contenido principal de tus páginas -->
-        {% block content %}{% endblock %}
+
+    <div class="login-container">
+        <img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQNC4pVHxwkei11tj0pfBmQU66Xv9NdrSO0u7y4v7ReihcUOQnN" alt="Imagen" class="img-fluid">
+        <div class="login-box">
+            <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Usuario</label>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Ingrese su usuario" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Ingrese su contraseña" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button>
+                <div class="text-center mt-3">
+                    <a href="/" class="forgot-password">¿Olvidaste tu contraseña?</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
     </main>
 
     <footer class="bg-light text-center py-4">
-        <!-- Aquí puedes incluir el pie de página de tu sitio -->
         <p>&copy; {{ year }} Todos los derechos reservados.</p>
     </footer>
 
-    <!-- Agrega los scripts de Bootstrap al final del documento -->
+    <!-- Scripts de Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
