@@ -8,7 +8,7 @@ def inicio_view(request):
     return render(request, 'inicio.html')
 
 class SesionView(LoginRequiredMixin, TemplateView):
-    template_name = 'sesion.html'
+    template_name = 'inicio.html'
     login_url = reverse_lazy('login')
 
 class AcercaView(TemplateView):
