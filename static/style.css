@@ -34,6 +34,35 @@
     background-color: rgb(44, 45, 49);
 }
 
+.session-text, .session-link {
+    color: white; 
+    text-decoration: none; 
+}
+
+.session-link:hover {
+    text-decoration: none; 
+    color: #e0e0e0; 
+}
+
+.image-container {
+    text-align: center; 
+}
+
+.responsive-image {
+    max-width: 50%; 
+    height: auto;    
+    display: block;  
+    margin: auto;   
+}
+
+/* Si necesitas un tamaño máximo específico para pantallas grandes */
+@media (min-width: 768px) {
+    .responsive-image {
+        max-width: 25%; /* Puedes ajustar este valor según lo necesites */
+    }
+}
+
+
 /* Estilos globales para todos los elementos */
 * {
     margin: 0;

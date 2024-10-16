@@ -24,15 +24,15 @@
                 {% if user.is_authenticated %}
                 <form method="POST" action="{% url 'logout' %}">
                     {% csrf_token %}
-                    <span>Cerrar Sesión</span>
+                    <span class="session-text">Cerrar Sesión</span>
                 </form>
                 {% else %}
                 <span>
-                    <a class="nav-link" href="/auth/login">Iniciar Sesión</a>
-                <span>
+                    <a class="nav-link session-link" href="/auth/login">Iniciar Sesión</a>
+                </span>
                 {% endif %}
             </div>
-        </div>
+        </div>    
 
         <nav class="navegacion">
             <ul><!--
@@ -68,7 +68,23 @@
 
         <div>
             <div class="linea"></div>
-
+            <nav class="navegacion">
+                <ul>
+                    <li>
+                        <a href="#">
+                            <ion-icon name="construct-outline"></ion-icon>
+                            <span>Soporte</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <ion-icon name="information-circle-outline"></ion-icon>
+                            <span>Acerca</span>
+                        </a>
+                    </li>
+                </ul>
+            
+            <div class="linea"></div>
             <div class="modo-oscuro">
                 <div class="info">
                     <ion-icon name="moon-outline"></ion-icon>
@@ -88,7 +104,10 @@
     </div>
 
     <main>
-        <h1>Contenido</h1>
+        <div class="image-container">
+            <img src="/static/logo.jpg" alt="Logo" class="responsive-image">
+        </div>
+        
         {% block content %}{% endblock %}
     </main>
 
