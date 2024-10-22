@@ -22,10 +22,12 @@
             <div class="nombre-pagina">
                 <ion-icon id="barramenu" name="menu-outline"></ion-icon>
                 {% if user.is_authenticated %}
-                <form method="POST" action="{% url 'logout' %}">
+                <form id="logout-form" method="POST" action="{% url 'logout' %}" style="display: none;">
                     {% csrf_token %}
-                    <span class="session-text">Cerrar Sesión</span>
                 </form>
+                <a href="#" class="nav-link session-link" onclick="document.getElementById('logout-form').submit(); return false;">
+                    Cerrar Sesión
+                </a>
                 {% else %}
                 <span>
                     <a class="nav-link session-link" href="/auth/login">Iniciar Sesión</a>
@@ -35,34 +37,15 @@
         </div>    
 
         <nav class="navegacion">
-            <ul><!--
-                <li>
-                    <a id="inbox" href="{% url 'inicio' %}">
-                        <ion-icon name="home-outline"></ion-icon>
-                        <span>Inicio</span>
-                    </a>
-                </li>-->
+            <ul>
                 {% if user.is_authenticated %}
-                    <!--
-                    <li>
-                        <a href="{% url 'municipio_list' %}">
-                            <ion-icon name="document-text-outline"></ion-icon>
-                            <span>Municipios</span>
-                        </a>
-                    </li>-->
-                {% endif %}
                 <li>
                     <a href="#">
                         <ion-icon name="alert-circle-outline"></ion-icon>
-                        <span>Prueba</span>
+                        <span>Prueba1</span>
                     </a>
                 </li>
-                <li>
-                    <a href="#">
-                        <ion-icon name="trash-outline"></ion-icon>
-                        <span>Prueba</span>
-                    </a>
-                </li>
+                {% endif %}
             </ul>
         </nav>
 
@@ -112,10 +95,6 @@
 
         {% endblock %}
     </main>
-
-    <footer class="bg-light text-center py-3">
-        <p>Derechos de autor &copy; {{ year }} Grupo 1</p>
-    </footer>
 
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script src="{% static 'script.js' %}"></script>
