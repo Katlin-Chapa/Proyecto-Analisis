@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Productos</title>
+</head>
+<body>
+    <h1>Lista de Productos</h1>
+    {% if is_admin %}
+        <a href="{% url 'agregar-producto' %}">Agregar Producto</a>  <!-- Cambiado aquí -->
+    {% endif %}
+    <ul>
+        {% for producto in object_list %}
+            <li>
+                <p>Nombre: {{ producto.nombre }}</p>
+                <p>Precio: {{ producto.precio }}</p>
+                <p>Stock: {{ producto.stock_actual }}</p>
+                <p><a href="{% url 'producto-detalle' producto.id %}">Ver detalles</a></p>
+                {% if is_admin %}
+                    <p><a href="{% url 'modificar-stock' producto.id %}">Modificar Stock</a></p>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -1,17 +1,18 @@
-from django.conf import settings
-from django.conf.urls.static import static
-from django.contrib import admin
-from django.urls import path, include
-from . import views
+from django.urls import path
+from .views import (
+    ProductoListView,
+    ProductoDetailView,
+    ModificarStockView,
+    ProductoCreateView,
+    CategoriaListView, 
+    CategoriaCreateView
+)
 
 urlpatterns = [
-    path('carga/', views.carga_producto, name='carga_producto'),
-    path('productos/', views.lista_productos, name='lista_productos'),
-    path('producto/crear/', views.crear_producto, name='crear_producto'),
-    path('producto/editar/<int:producto_id>/', views.editar_producto, name='editar_producto'),
-    path('producto/eliminar/<int:producto_id>/', views.eliminar_producto, name='eliminar_producto'),
-    
+    path('categorias/', CategoriaListView.as_view(), name='categoria-list'),
+    path('categorias/agregar/', CategoriaCreateView.as_view(), name='agregar-categoria'),
+    path('productos/', ProductoListView.as_view(), name='productos'),  # Vista para listar productos
+    path('productos/<int:pk>/', ProductoDetailView.as_view(), name='producto-detalle'),  # Vista para detalle de producto
+    path('productos/<int:pk>/modificar_stock/', ModificarStockView.as_view(), name='modificar-stock'),  # Vista para modificar stock
+    path('productos/agregar/', ProductoCreateView.as_view(), name='agregar-producto'),  # Nueva URL para agregar productos
 ]
-
-if settings.DEBUG:  # Solo sirve archivos de medios en modo de depuración
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

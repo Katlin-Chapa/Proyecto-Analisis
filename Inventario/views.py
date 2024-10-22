@@ -1,59 +1,81 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Producto
-from .forms import CrearProductoForm, CargaProductoForm
-from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView, DetailView, UpdateView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import render, redirect
+from .models import Producto, MovimientoInventario
+from django.urls import reverse_lazy
+from .forms import ProductoForm
+from .models import Categoria
+from .forms import CategoriaForm
 
-@login_required
-def crear_producto(request):
-    if request.method == 'POST':
-        form = CrearProductoForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('lista_productos')
-    else:
-        form = CrearProductoForm()
-    
-    return render(request, 'crear_producto.html', {'form': form})
+# Vista para listar categorías
+class CategoriaListView(LoginRequiredMixin, ListView):
+    model = Categoria
+    template_name = 'categorias.html'
 
-@login_required
-def lista_productos(request):
-    productos = Producto.objects.all()
-    return render(request, 'lista_productos.html', {'productos': productos})
+# Vista para crear una nueva categoría
+class CategoriaCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Categoria
+    form_class = CategoriaForm
+    template_name = 'agregar_categoria.html'
+    success_url = reverse_lazy('categoria-list')  # Redirigir a la lista de categorías después de agregar
 
-@login_required
-def carga_producto(request):
-    
-    if request.method == 'POST':
-        form = CargaProductoForm(request.POST)
-        if form.is_valid():
-            producto = form.cleaned_data['producto']
-            cantidad = form.cleaned_data['cantidad']
-            documento = form.cleaned_data['documento']  # Aquí puedes usar el documento según sea necesario
-            
-            # Actualizar la cantidad del producto
-            producto.cantidad += cantidad
-            producto.save()
-            return redirect('lista_productos')
-    else:
-        form = CargaProductoForm()
-    
-    return render(request, 'carga_producto.html', {'form': form})
+    def test_func(self):
+        return self.request.user.is_staff
 
-@login_required
-def editar_producto(request, producto_id):
-    producto = get_object_or_404(Producto, pk=producto_id)
-    if request.method == 'POST':
-        form = CrearProductoForm(request.POST, request.FILES, instance=producto)
-        if form.is_valid():
-            form.save()
-            return redirect('lista_productos')
-    else:
-        form = CrearProductoForm(instance=producto)
-    
-    return render(request, 'crear_producto.html', {'form': form})
+# Vista para mostrar los productos según el rol del usuario
+class ProductoListView(LoginRequiredMixin, ListView):
+    model = Producto
+    template_name = 'productos.html'  # Un solo template para ambos roles
 
-@login_required
-def eliminar_producto(request, producto_id):
-    producto = get_object_or_404(Producto, pk=producto_id)
-    producto.delete()
-    return redirect('lista_productos')
+    def get_queryset(self):
+        # Devuelve todos los productos
+        return Producto.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_admin'] = self.request.user.is_staff  # Añadir el rol del usuario al contexto
+        return context
+
+# Vista para el detalle del producto
+class ProductoDetailView(LoginRequiredMixin, DetailView):
+    model = Producto
+    template_name = 'producto_detalle.html'
+
+# Vista para modificar el stock del producto y solicitar el número de documento
+class ModificarStockView(LoginRequiredMixin, UpdateView):
+    model = Producto
+    fields = ['stock_actual']
+    template_name = 'modificar_stock.html'  # Template para modificar stock
+    success_url = reverse_lazy('productos')  # Redirigir a la lista de productos después de la modificación
+
+    def post(self, request, *args, **kwargs):
+        producto = self.get_object()
+        numero_documento = request.POST.get('numero_documento', None)
+        cantidad = request.POST.get('stock_actual', None)
+
+        if not numero_documento:
+            return render(request, self.template_name, {'form': self.get_form(), 'error': "Debe proporcionar un número de documento."})
+
+        # Crear el movimiento de inventario
+        MovimientoInventario.objects.create(
+            producto=producto,
+            cantidad=int(cantidad) - producto.stock_actual,
+            tipo='entrada' if int(cantidad) > producto.stock_actual else 'salida',
+            usuario=request.user,
+            numero_documento=numero_documento
+        )
+
+        # Actualizar el stock del producto
+        producto.stock_actual = cantidad
+        producto.save()
+
+        return redirect(self.success_url)
+
+class ProductoCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Producto
+    form_class = ProductoForm
+    template_name = 'agregar_producto.html'
+    success_url = reverse_lazy('productos')  # Redirigir a la lista de productos después de agregar
+
+    def test_func(self):
+        return self.request.user.is_staff  # Solo permitir que los administradores accedan

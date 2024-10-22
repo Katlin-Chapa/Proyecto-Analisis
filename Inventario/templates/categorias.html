@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Categorías</title>
+</head>
+<body>
+    <h1>Lista de Categorías</h1>
+    <a href="{% url 'agregar-categoria' %}">Agregar Nueva Categoría</a>
+    <ul>
+        {% for categoria in object_list %}
+            <li>{{ categoria.nombre }}</li>
+        {% empty %}
+            <li>No hay categorías disponibles.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

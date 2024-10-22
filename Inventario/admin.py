@@ -1,19 +1,22 @@
 from django.contrib import admin
-from .models import Producto
-from django.utils.safestring import mark_safe
+from .models import Categoria, Producto, MovimientoInventario
 
+# Registro del modelo Categoria
+@admin.register(Categoria)
+class CategoriaAdmin(admin.ModelAdmin):
+    list_display = ('id', 'nombre')  # Muestra el id y el nombre en la lista
+    search_fields = ('nombre',)  # Campo que se puede buscar
+
+# Registro del modelo Producto
+@admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'cantidad', 'fecha_carga', 'imagen')  # Campos a mostrar en la lista
-    search_fields = ('nombre',)  # Permitir búsqueda por nombre
-    list_filter = ('fecha_carga',)  # Filtros por fecha de carga
+    list_display = ('id', 'nombre', 'categoria', 'precio', 'stock_actual', 'stock_minimo', 'fecha_caducidad')  # Campos a mostrar
+    list_filter = ('categoria',)  # Filtros por categoría
+    search_fields = ('nombre', 'categoria__nombre')  # Campos que se pueden buscar
 
-    # Para permitir la carga de imágenes en el formulario de administración
-    def imagen_preview(self, obj):
-        if obj.imagen:
-            return mark_safe(f'<img src="{obj.imagen.url}" width="50" height="50" />')
-        return "-"
-    imagen_preview.short_description = 'Imagen'
-
-    # Puedes agregar más configuraciones aquí si lo deseas
-
-admin.site.register(Producto, ProductoAdmin)
+# Registro del modelo MovimientoInventario
+@admin.register(MovimientoInventario)
+class MovimientoInventarioAdmin(admin.ModelAdmin):
+    list_display = ('id', 'producto', 'cantidad', 'tipo', 'fecha', 'usuario')  # Campos a mostrar
+    list_filter = ('tipo', 'fecha', 'usuario')  # Filtros por tipo, fecha y usuario
+    search_fields = ('producto__nombre', 'usuario__username')  # Campos que se pueden buscar

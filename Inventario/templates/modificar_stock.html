@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Stock</title>
+</head>
+<body>
+    <h1>Modificar Stock para {{ object.nombre }}</h1>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <label for="numero_documento">Número de Documento:</label>
+        <input type="text" name="numero_documento" required>
+        <label for="stock_actual">Nuevo Stock:</label>
+        <input type="number" name="stock_actual" required>
+        <button type="submit">Modificar</button>
+    </form>
+    <a href="{% url 'productos' %}">Cancelar</a>
+</body>
+</html>
