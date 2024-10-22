@@ -1,0 +1,47 @@
+/* Estilos generales */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('fondo.png'); /* Imagen de fondo para pantallas grandes */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.contenido {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    padding: 20px;
+}
+
+.texto-izquierdo {
+    color: white;
+    max-width: 400px;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro para que el texto sea legible */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Cambia el fondo cuando la pantalla es más pequeña (ej. pantallas móviles o ventanas pequeñas) */
+@media (max-width: 768px) {
+    body {
+        background-image: url('fondo2.png'); /* Imagen de fondo para pantallas pequeñas */
+    }
+
+    .contenido {
+        padding: 10px;
+    }
+
+    .texto-izquierdo {
+        max-width: 100%;  /* Asegura que el texto ocupe todo el ancho posible en pantallas pequeñas */
+        padding: 15px;
+    }
+}

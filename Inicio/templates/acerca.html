@@ -1,15 +1,21 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block title %}Acerca de{% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'acerca.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <h1>Acerca de la Aplicación</h1>
-        <p>Bienvenido a esta gestión de datos geográficos.</p> 
-        
-    <div class="col-md-8 text-center">
-        <img src="https://cdn-icons-png.flaticon.com/512/3357/3357329.png" class="img-fluid" style="max-width: 100%; height: auto; max-height: 200px;">
+<div class="contenido">
+    <div class="texto-izquierdo">
+        <h1>Mi Farmacia Sistema</h1>
+        <h2>1.0</h2>
+        <p>Desarrollado por Grupo 1</p>
+        <p>Versión 1.0.1</p>
+        <p>Derechos de autor &copy; 2024 </p>
     </div>
 </div>
 {% endblock %}
