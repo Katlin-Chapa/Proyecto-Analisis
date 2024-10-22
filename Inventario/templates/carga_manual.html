@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+    <h1>Carga Manual de Productos</h1>
+
+    <form method="get">
+        <input type="text" name="busqueda" placeholder="Buscar por nombre o categoría" value="{{ request.GET.busqueda }}">
+        <button type="submit">Buscar</button>
+    </form>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Imagen</th>
+                <th>Cantidad a Ingresar</th>
+                <th>Número de Documento</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+                <tr>
+                    <td>{{ producto.nombre }}</td>
+                    <td>
+                        {% if producto.imagen %}
+                            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" style="width: 50px; height: 50px;">
+                        {% else %}
+                            <span>No hay imagen disponible</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form action="{% url 'carga-manual' %}" method="post">
+                            {% csrf_token %}
+                            <input type="number" name="cantidad" min="1" required>
+                            <input type="hidden" name="producto_id" value="{{ producto.id }}">
+                    </td>
+                    <td>
+                            <input type="text" name="numero_documento" required>
+                    </td>
+                    <td>
+                            <button type="submit">Guardar</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'inventario' %}">
+        <button>Regresar</button>
+    </a>
+    <div class="pagination">
+        <span class="step-links">
+            {% if productos.has_previous %}
+                <a href="?page=1&busqueda={{ request.GET.busqueda }}">&laquo; primera</a>
+                <a href="?page={{ productos.previous_page_number }}&busqueda={{ request.GET.busqueda }}">anterior</a>
+            {% endif %}
+
+            <span class="current">
+                Página {{ productos.number }} de {{ productos.paginator.num_pages }}.
+            </span>
+
+            {% for i in productos.paginator.page_range %}
+                {% if productos.number == i %}
+                    <strong>{{ i }}</strong>
+                {% else %}
+                    <a href="?page={{ i }}&busqueda={{ request.GET.busqueda }}">{{ i }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if productos.has_next %}
+                <a href="?page={{ productos.next_page_number }}&busqueda={{ request.GET.busqueda }}">siguiente</a>
+                <a href="?page={{ productos.paginator.num_pages }}&busqueda={{ request.GET.busqueda }}">última &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endblock %}

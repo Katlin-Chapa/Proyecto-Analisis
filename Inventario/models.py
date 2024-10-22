@@ -15,7 +15,7 @@ class Producto(models.Model):
     dosis = models.CharField(max_length=50)
     stock_actual = models.PositiveIntegerField()
     stock_minimo = models.PositiveIntegerField()
-    imagen = models.ImageField(upload_to='productos/', null=True, blank=True)  # Nuevo campo para la imagen
+    imagen = models.ImageField(upload_to='productos/', null=True, blank=True)  
 
     def __str__(self):
         return f"{self.nombre} - {self.categoria.nombre}"
@@ -31,7 +31,7 @@ class MovimientoInventario(models.Model):
     tipo = models.CharField(choices=TIPOS_MOVIMIENTO, max_length=10)
     fecha = models.DateTimeField(auto_now_add=True)
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    numero_documento = models.CharField(max_length=100)  # Nuevo campo para el número de documento
+    numero_documento = models.CharField(max_length=100)  
 
     def __str__(self):
         return f"{self.tipo} de {self.cantidad} de {self.producto.nombre}"
