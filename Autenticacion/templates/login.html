@@ -16,6 +16,9 @@
             {{ form.as_p }}
             <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
         </form>
+        <div class="text-center mt-3"> <!-- Añadir un poco de margen superior -->
+            <a href="{% url 'password_reset' %}" class="forgot-password">¿Olvidaste tu contraseña?</a>
+        </div>
     </div>
 </div>
 {% endblock %}

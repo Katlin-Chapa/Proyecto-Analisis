@@ -141,3 +141,11 @@ AUTH_USER_MODEL = 'Autenticacion.AutenticacionUsuario'
 LOGIN_REDIRECT_URL = 'sesion'
 LOGIN_URL = '/auth/login'
 LOGOUT_REDIRECT_URL = '/auth/login'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'jmunozp7@miumg.edu.gt'
+EMAIL_HOST_PASSWORD = 'admin123'

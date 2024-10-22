@@ -1,37 +1,108 @@
-body {
-    background-color: #f0f2f5; /* Color de fondo suave */
+/* Estilos generales */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: 'Roboto', sans-serif; /* Fuente atractiva */
+    color: #333; /* Color de texto por defecto */
+    transition: background 0.5s ease-in-out; /* Transición suave para el fondo */
+    background: linear-gradient(to right, #f6ffee, #5a86d3); /* Degradado */
 }
 
-.row {
-    height: 100vh; /* Asegura que el contenido esté centrado verticalmente */
+body .contenido {
+    height: 100vh; /* Usa toda la altura de la ventana */
+    display: flex;
+    align-items: center; /* Centra verticalmente el contenido */
+    justify-content: center; /* Centra horizontalmente el contenido */
+    text-align: center; /* Centrar texto */
+    position: relative; /* Para poder posicionar el texto */
+    z-index: 1; /* Asegurarse de que el contenido esté por encima del fondo */
 }
 
-.col-md-4 {
-    background-color: white; /* Fondo blanco para el formulario */
-    padding: 30px; /* Espaciado interno */
-    border-radius: 15px; /* Esquinas redondeadas */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+/* Estilos del cuadro de inicio de sesión */
+.texto-izquierdo {
+    background-color: rgba(255, 255, 255, 0.95); /* Fondo blanco semi-transparente */
+    padding: 40px; /* Aumenta el espaciado interno */
+    border-radius: 20px; /* Bordes redondeados */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); /* Sombra para un efecto tridimensional */
+    transition: transform 0.3s ease; /* Transición suave para el efecto hover */
+    animation: slideIn 0.5s forwards; /* Animación de entrada */
+    margin-top: -3cm; /* Ajuste para mover el formulario 3 cm más arriba */
 }
 
-h1 {
-    color: #333; /* Color del texto del encabezado */
-    font-size: 24px; /* Tamaño de fuente más grande */
-    text-align: center; /* Centra el texto */
+/* Estilo de los campos de entrada */
+.form-control {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra en los campos */
+    border-radius: 10px; /* Bordes redondeados */
+    padding: 15px; /* Espaciado interno */
+    margin-bottom: 20px; /* Espaciado entre los campos */
+    border: 1px solid #d1d1d1; /* Borde delgado */
+    transition: border-color 0.3s ease; /* Transición para el color del borde */
 }
 
+.form-control:focus {
+    border-color: #28a745; /* Color del borde al enfocar */
+    outline: none; /* Elimina el borde de enfoque predeterminado */
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.5); /* Sombra al enfocar */
+}
+
+/* Estilo del botón */
 .btn-primary {
-    background-color: #007bff; /* Color de fondo del botón */
-    border: none; /* Sin borde */
-    padding: 10px 20px; /* Espaciado interno */
-    border-radius: 5px; /* Esquinas redondeadas */
-    font-size: 16px; /* Tamaño de la fuente */
-    transition: background-color 0.3s; /* Transición suave */
+    background-color: #4c49e4; /* Verde vibrante */
+    border: none;
+    border-radius: 25px; /* Bordes redondeados más pronunciados */
+    color: #fff; /* Color del texto */
+    padding: 12px 30px; /* Espaciado interior (arriba-abajo, izquierda-derecha) */
+    font-size: 16px; /* Tamaño de fuente */
+    font-weight: bold; /* Negrita */
+    text-transform: uppercase; /* Texto en mayúsculas */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Sombra */
+    cursor: pointer; /* Cambiar cursor al pasar el ratón */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transición suave para el fondo y el transform */
 }
 
 .btn-primary:hover {
-    background-color: #0056b3; /* Color de fondo al pasar el ratón */
+    background-color: #218838; /* Verde más oscuro en hover */
+    transform: translateY(-2px); /* Eleva el botón ligeramente al pasar el ratón */
 }
 
-form {
-    margin-top: 20px; /* Espaciado superior para el formulario */
+.btn-primary:active {
+    transform: translateY(0); /* Vuelve a su posición original al hacer clic */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Sombra al hacer clic */
+}
+
+/* Animación de entrada */
+@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Cambios para pantallas pequeñas */
+@media (max-width: 768px) {
+    .texto-izquierdo {
+        padding: 30px; /* Ajusta el espaciado interno en móviles */
+    }
+
+    .form-control {
+        padding: 12px; /* Espaciado interior ajustado */
+    }
+}
+
+
+.forgot-password {
+    color: #28a745; /* Color del texto */
+    text-decoration: none; /* Elimina subrayado */
+    font-weight: bold; /* Negrita */
+}
+
+.forgot-password:hover {
+    text-decoration: underline; /* Subrayar al pasar el ratón */
+    color: #218838; /* Color más oscuro al pasar el ratón */
 }

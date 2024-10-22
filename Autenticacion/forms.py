@@ -11,3 +11,7 @@ class InicioFormulario(forms.Form):
         'placeholder': 'Contraseña',
         'id': 'password'
     }))
+
+class SupportForm(forms.Form):
+    subject = forms.CharField(max_length=100, label='Asunto')
+    message = forms.CharField(widget=forms.Textarea, label='Mensaje')
