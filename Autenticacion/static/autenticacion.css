@@ -1,0 +1,37 @@
+body {
+    background-color: #f0f2f5; /* Color de fondo suave */
+}
+
+.row {
+    height: 100vh; /* Asegura que el contenido esté centrado verticalmente */
+}
+
+.col-md-4 {
+    background-color: white; /* Fondo blanco para el formulario */
+    padding: 30px; /* Espaciado interno */
+    border-radius: 15px; /* Esquinas redondeadas */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+h1 {
+    color: #333; /* Color del texto del encabezado */
+    font-size: 24px; /* Tamaño de fuente más grande */
+    text-align: center; /* Centra el texto */
+}
+
+.btn-primary {
+    background-color: #007bff; /* Color de fondo del botón */
+    border: none; /* Sin borde */
+    padding: 10px 20px; /* Espaciado interno */
+    border-radius: 5px; /* Esquinas redondeadas */
+    font-size: 16px; /* Tamaño de la fuente */
+    transition: background-color 0.3s; /* Transición suave */
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Color de fondo al pasar el ratón */
+}
+
+form {
+    margin-top: 20px; /* Espaciado superior para el formulario */
+}
