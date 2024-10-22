@@ -22,6 +22,7 @@ def lista_productos(request):
 
 @login_required
 def carga_producto(request):
+    
     if request.method == 'POST':
         form = CargaProductoForm(request.POST)
         if form.is_valid():
