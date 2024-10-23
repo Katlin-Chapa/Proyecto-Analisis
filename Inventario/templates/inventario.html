@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+
+{% block title %} Lista de Inventario {% endblock title %}
+
+{% block content %}
+    <div class="row" style="color: #4e4e4e; font-weight: bold; font-size: 3rem;">
+        <div class="col-md-8">Lista de Inventario</div>
+        <div class="col-md-4">               
+            <div style="float:right;"> <a class="btn btn-success" href="#"><i class="bi bi-plus-circle"></i>  Agregar</a> </div>
+        </div>
+    </div>
+    
+    <div style="border-bottom: 1px solid white;"></div>
+    
+    <br>
+
+    <div id="search-fields">
+        <form method="get">
+            <div class="input-group mb-3">
+                {% render_field filter.form.nombre class="form-control" placeholder="Buscar por nombre del medicamento" %}
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-pink">Buscar por Nombre</button>
+                </div>
+            </div>
+            <div class="input-group mb-3">
+                {% render_field filter.form.categoria class="form-control" placeholder="Buscar por categoría" %}
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-pink">Buscar por Categoría</button>
+                </div>
+            </div>
+        </form>
+        <button id="clear-button" class="btn btn-warning"><i class="bi bi-stars"></i>  Limpiar Búsqueda</button>
+    </div>
+
+    <script>
+        document.getElementById("clear-button").onclick = function() {
+            // Limpiar los campos de búsqueda
+            document.querySelector('input[name="nombre"]').value = '';
+            document.querySelector('select[name="categoria"]').value = '';
+            // Redirigir a la misma página para refrescar la tabla
+            window.location.href = window.location.pathname; 
+        };
+    </script>
+
+    <br>
+    
+    <!-- Contenedor para la tabla que permite desplazamiento horizontal -->
+    <div class="table-responsive">
+        <table class="table table-css table-bordered table-hover">
+            <thead class="thead-dark align-middle">
+                <tr>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Vencimiento</th>
+                    <th>Ingreso</th>
+                    <th>Documento</th>
+                    <th>Dosis</th>
+                    <th>Categoría</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            {% if object_list %}
+                <tbody>
+                    {% for stock in object_list %}
+                        <tr>
+                            <td class="align-middle">
+                                {% if stock.imagen %}
+                                    <img src="{{ stock.imagen.url }}" alt="{{ stock.nombre }}" style="width: 50px; height: auto;">
+                                {% else %}
+                                    Sin imagen
+                                {% endif %}
+                            </td> 
+                            <td class="align-middle">{{ stock.nombre }}</td>
+                            <td class="align-middle">{{ stock.cantidad }}</td>
+                            <td class="align-middle">{{ stock.precio }}</td>
+                            <td class="align-middle">{{ stock.fecha_vencimiento|date:"d/m/Y" }}</td>
+                            <td class="align-middle">{{ stock.fecha_ingreso|date:"d/m/Y" }}</td>
+                            <td class="align-middle">{{ stock.numero_documento }}</td>
+                            <td class="align-middle">{{ stock.dosis }}</td> 
+                            <td class="align-middle">{{ stock.categoria }}</td> 
+                            <td class="align-middle">
+                                <a href="#" class="btn btn-info btn-sm"><i class="bi bi-pencil-square"></i></a>
+                                <a href="#" class="btn btn-danger btn-sm"><i class="bi bi-trash3"></i></a>
+                            </td>          
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            {% else %}
+                <tbody>
+                    <tr>
+                        <td colspan="8" class="text-center">No hay registros disponibles.</td>
+                    </tr>
+                </tbody>
+            {% endif %}
+        </table>  
+    </div> <!-- Fin del contenedor para la tabla -->
+
+{% endblock content %}
+

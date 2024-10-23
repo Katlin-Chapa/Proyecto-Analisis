@@ -10,11 +10,12 @@ class Stock(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100, unique=True)  # Nombre del medicamento
     cantidad = models.IntegerField(default=1)  # Cantidad disponible
+    precio = models.DecimalField(max_digits=10, decimal_places=2)  # Precio del medicamento
     fecha_vencimiento = models.DateField()  # Fecha de vencimiento
     fecha_ingreso = models.DateField(auto_now_add=True)  # Fecha de ingreso al inventario
     numero_documento = models.CharField(max_length=50, blank=True, null=True)  # Número del documento relacionado
     dosis = models.CharField(max_length=50)  # Dosis del medicamento (ej: 10 mg, 1 L)
-    imagen = models.ImageField(upload_to='imagenes/', blank=True, null=True)  # Imagen del medicamento
+    imagen = models.ImageField(upload_to='productos/', blank=True, null=True)  # Imagen del medicamento
     categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)  # Categoría del medicamento
     es_eliminado = models.BooleanField(default=False)  # Marca para eliminación lógica
 

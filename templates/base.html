@@ -43,10 +43,12 @@
                     <a class="sidebar-text sidebar-button" href="{% url 'inicio' %}"><i class="bi bi-house-door"></i></i>   Inicio</a>
                 </li>               
                 <li>
-                    <a href="#inventarioSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="bi bi-box-seam"></i>   Inventario</a>
+                    <a href="#inventarioSubmenu" data-bs-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button">
+                        <i class="bi bi-box-seam"></i> Inventario
+                    </a>
                     <ul class="collapse list-unstyled" id="inventarioSubmenu">
-                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="#"><i class="bi bi-box-arrow-in-up"></i>   Agregar Nuevo</a></li>
-                        <li> <a class="sidebar-text sidebar-subitem sidebar-button" href="#"><i class="bi bi-capsule-pill"></i>   Listado de Productos</a></li>
+                        <li><a class="sidebar-text sidebar-subitem sidebar-button" href="#"><i class="bi bi-box-arrow-in-up"></i> Cargar stock</a></li>
+                        <li><a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'inventario' %}"><i class="bi bi-capsule-pill"></i> Listado de Productos</a></li>
                     </ul>
                 </li>
                 <li>
@@ -76,24 +78,12 @@
                         <i class="fas fa-user-circle"></i> {{ request.user.username }}
                     </a>
                     <ul class="collapse list-unstyled" id="UserSubmenu">
-                        {% if request.user.is_superuser %}
-                            <li>
-                                <a class="sidebar-text sidebar-subitem sidebar-button" href="{% url 'admin:index' %}">
-                                    <i class="bi bi-person-gear"></i>  Página del administrador
-                                </a>
-                            </li>
-                        {% endif %}
                         <li>
                             <form method="POST" action="{% url 'logout' %}" class="d-inline">
                                 {% csrf_token %}
                                 <a href="#" class="sidebar-text sidebar-subitem sidebar-button" onclick="this.closest('form').submit();"><i class="bi bi-x-circle"></i>  Cerrar Sesión</a>
                             </form>
-                        </li>
-
-                        
-                        
-                        
-                        
+                        </li>                      
                     </ul>
                 </li>
                 

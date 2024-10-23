@@ -14,6 +14,5 @@ from .filters import StockFilter
 
 class StockListView(FilterView):
     filterset_class = StockFilter
-    queryset = Stock.objects.filter(is_deleted=False)
+    queryset = Stock.objects.filter(es_eliminado=False)
     template_name = 'inventario.html'
-    paginate_by = 10
