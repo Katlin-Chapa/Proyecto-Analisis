@@ -39,7 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'widget_tweaks', # Modificar formularios desde las plantillas.                       
-    'crispy_forms', # Facilita el renderizado de formularios con Bootstrap.
+    'crispy_forms', # Facilita el renderizado de formularios usando solo una línea de código.
+    'login_required',  # Para la autenticación.
+    'crispy_bootstrap5',# Facilita el renderizado de formularios con Bootstrap.
+
+    'Inicio',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'login_required.middleware.LoginRequiredMiddleware', 
 ]
 
 ROOT_URLCONF = 'Farmacia.urls'
@@ -121,9 +126,14 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = ['static/', BASE_DIR]
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'   
+CRISPY_TEMPLATE_PACK = 'bootstrap5'   
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+LOGIN_REDIRECT_URL = 'inicio'                          
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+LOGIN_URL = 'login'                                     
+
+LOGIN_REQUIRED_IGNORE_VIEW_NAMES = [                    
+    'login',
+    'logout',
+    'acerca',
+]
