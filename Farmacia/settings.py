@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',# Facilita el renderizado de formularios con Bootstrap.
 
     'Inicio',
+    'Inventario',
 ]
 
 MIDDLEWARE = [
