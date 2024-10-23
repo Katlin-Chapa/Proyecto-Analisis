@@ -7,6 +7,7 @@
     <title>Mi Farmacia</title>
     <link rel="icon" href="{% static 'pestaña.jpg' %}" type="image/jpeg">
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'autenticacion.css' %}">
     
     {% block extra_style %}
 
@@ -80,7 +81,7 @@
             <nav class="navegacion">
                 <ul>
                     <li>
-                        <a href="#">
+                        <a href="{% url 'support' %}">
                             <ion-icon name="construct-outline"></ion-icon>
                             <span>Soporte</span>
                         </a>

@@ -1,11 +1,10 @@
 {% extends 'base.html' %}
-
 {% load static %}
-
 {% block title %}Acerca de{% endblock %}
 
-{% block extra_css %}
+{% block extra_style %}
     <link rel="stylesheet" href="{% static 'acerca.css' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -16,6 +15,8 @@
         <p>Desarrollado por Grupo 1</p>
         <p>Versión 1.0.1</p>
         <p>Derechos de autor &copy; 2024 </p>
+        
+
     </div>
 </div>
 {% endblock %}
