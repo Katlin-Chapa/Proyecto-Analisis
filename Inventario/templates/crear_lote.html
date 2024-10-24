@@ -1,14 +1,5 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Crear Lote</title>
-</head>
-<body>
     <h1>Crear Nuevo Lote</h1>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}  <!-- Muestra el formulario -->
     </form>
-</body>
-</html>

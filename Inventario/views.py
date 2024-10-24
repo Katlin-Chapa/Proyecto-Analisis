@@ -60,3 +60,13 @@ def crear_lote(request):
     
     return render(request, 'crear_lote.html', {'form': form})
 
+from django.http import JsonResponse
+from .models import Stock
+
+def obtener_lotes(request, stock_id):
+    stock = Stock.objects.filter(id=stock_id).first()
+    if stock:
+        lotes = stock.lotes.all()
+        data = [{'numero_documento': lote.numero_documento, 'fecha_vencimiento': lote.fecha_vencimiento} for lote in lotes]
+        return JsonResponse({'lotes': data})
+    return JsonResponse({'lotes': []})

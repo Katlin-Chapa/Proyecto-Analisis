@@ -2,13 +2,12 @@ from django.urls import path
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import StockListView, CargarProductosAnualmente, crear_lote
+from .views import StockListView, CargarProductosAnualmente, crear_lote, obtener_lotes
 
 urlpatterns = [
     path('inventario/', views.StockListView.as_view(), name='inventario'),
-      path('cargar/', views.CargarProductosAnualmente.as_view(), name='cargar-productos'),  # Página para cargar productos
-          path('crear-lote/', crear_lote, name='crear_lote'),
-
+    path('cargar/', views.CargarProductosAnualmente.as_view(), name='cargar-productos'),  # Página para cargar productos
+    path('crear-lote/', crear_lote, name='crear_lote'),
 
   #  path('agregar-lote/<int:producto_id>/', AgregarLoteView.as_view(), name='agregar-lote'),  # Añadir lote a producto
   #   path('cargar/', StockListView.as_view(), name='cargar'),
