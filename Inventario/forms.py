@@ -35,6 +35,49 @@ class LoteForm(forms.ModelForm):
         model = Lote
         fields = ['stock', 'cantidad', 'numero_documento', 'fecha_vencimiento']
 
-    # Puedes agregar validaciones personalizadas aquí si es necesario
+from django import forms
+from .models import Stock, Lote
+
+class StockForm(forms.ModelForm):
+    class Meta:
+        model = Stock
+        fields = ['nombre', 'cantidad', 'precio', 'dosis', 'imagen', 'categoria', 'numero_documento']
+        widgets = {
+            'nombre': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Nombre del medicamento'
+            }),
+            'cantidad': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Cantidad disponible'
+            }),
+            'precio': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Precio del medicamento'
+            }),
+            'dosis': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Dosis del medicamento'
+            }),
+            'imagen': forms.ClearableFileInput(attrs={
+                'class': 'form-control'
+            }),
+            'categoria': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'numero_documento': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Número de documento relacionado'
+            })
+        }
+        labels = {
+            'nombre': 'Nombre del Medicamento',
+            'cantidad': 'Cantidad',
+            'precio': 'Precio',
+            'dosis': 'Dosis',
+            'imagen': 'Imagen',
+            'categoria': 'Categoría',
+            'numero_documento': 'Número de Documento'
+        }
 
 

@@ -70,3 +70,40 @@ def obtener_lotes(request, stock_id):
         data = [{'numero_documento': lote.numero_documento, 'fecha_vencimiento': lote.fecha_vencimiento} for lote in lotes]
         return JsonResponse({'lotes': data})
     return JsonResponse({'lotes': []})
+
+
+from django.shortcuts import render, redirect
+from .models import Categoria, Stock
+
+def agregar_categoria_producto(request):
+    if request.method == 'POST':
+        if 'nombre_categoria' in request.POST:
+            # Procesar formulario de categoría
+            nombre_categoria = request.POST.get('nombre_categoria')
+            Categoria.objects.create(nombre=nombre_categoria)
+            return redirect('agregar')  # Redirigir después de agregar
+        elif 'nombre_producto' in request.POST:
+            # Procesar formulario de producto
+            nombre_producto = request.POST.get('nombre_producto')
+            cantidad = request.POST.get('cantidad')
+            precio = request.POST.get('precio')
+            dosis = request.POST.get('dosis')
+            numero_documento = request.POST.get('numero_documento')
+            fecha_vencimiento = request.POST.get('fecha_vencimiento')
+            categoria = Categoria.objects.get(id=request.POST.get('categoria'))
+            imagen = request.FILES.get('imagen')
+
+            Stock.objects.create(
+                nombre=nombre_producto,
+                cantidad=cantidad,
+                precio=precio,
+                dosis=dosis,
+                numero_documento=numero_documento,
+                fecha_vencimiento=fecha_vencimiento,
+                categoria=categoria,
+                imagen=imagen
+            )
+            return redirect('agregar')  # Redirigir después de agregar
+
+    categorias = Categoria.objects.all()
+    return render(request, 'agregar.html', {'categorias': categorias})
