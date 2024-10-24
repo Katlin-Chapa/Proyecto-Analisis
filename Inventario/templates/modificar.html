@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Modificar Producto{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Formulario para Modificar Producto -->
+        <div class="col-md-8 offset-md-2">
+            <h2 class="text-center mb-4">Modificar Producto</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="nombre" class="form-label">Nombre del Producto</label>
+                        <input type="text" name="nombre" id="nombre" class="form-control" value="{{ stock.nombre }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="cantidad" class="form-label">Cantidad Disponible</label>
+                        <input type="number" name="cantidad" id="cantidad" class="form-control" value="{{ stock.cantidad }}" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="precio" class="form-label">Precio</label>
+                        <input type="text" name="precio" id="precio" class="form-control" value="{{ stock.precio }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="dosis" class="form-label">Dosis</label>
+                        <input type="text" name="dosis" id="dosis" class="form-control" value="{{ stock.dosis }}" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="categoria" class="form-label">Categoría</label>
+                    <select name="categoria" id="categoria" class="form-select">
+                        {% for categoria in categorias %}
+                        <option value="{{ categoria.id }}" {% if categoria.id == stock.categoria.id %}selected{% endif %}>
+                            {{ categoria.nombre }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="imagen" class="form-label">Imagen del Producto</label>
+                    <input type="file" name="imagen" id="imagen" class="form-control">
+                    {% if stock.imagen %}
+                    <img src="{{ stock.imagen.url }}" alt="{{ stock.nombre }}" class="mt-3" style="max-width: 150px;">
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

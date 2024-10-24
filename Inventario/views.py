@@ -107,3 +107,56 @@ def agregar_categoria_producto(request):
 
     categorias = Categoria.objects.all()
     return render(request, 'agregar.html', {'categorias': categorias})
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Stock, Categoria
+
+def modificar_producto(request, id):
+    stock = get_object_or_404(Stock, id=id)
+    categorias = Categoria.objects.all()
+
+    if request.method == 'POST':
+        # Obtener los datos del formulario
+        nombre = request.POST.get('nombre')
+        cantidad = request.POST.get('cantidad')
+        precio = request.POST.get('precio')
+        dosis = request.POST.get('dosis')
+        categoria_id = request.POST.get('categoria')
+        imagen = request.FILES.get('imagen')
+
+        # Actualizar solo los campos que se pueden modificar
+        stock.nombre = nombre
+        stock.cantidad = cantidad
+        stock.precio = precio
+        stock.dosis = dosis
+        stock.categoria_id = categoria_id
+
+        # Si se proporciona una nueva imagen, actualizarla
+        if imagen:
+            stock.imagen = imagen
+
+        # Guardar los cambios en el modelo
+        stock.save()
+
+        # Redirigir a la lista de inventario u otra vista
+        return redirect('inventario')  # Cambia esto según tu URL de lista de inventario
+
+    context = {
+        'stock': stock,
+        'categorias': categorias,
+    }
+    return render(request, 'modificar.html', context)
+
+# views.py
+from django.shortcuts import redirect, get_object_or_404
+from django.urls import reverse
+from .models import Stock  # Asegúrate de importar tu modelo
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def eliminar_producto(request, stock_id):
+    producto = get_object_or_404(Stock, id=stock_id)
+    producto.delete()
+    return redirect(reverse('inventario'))  # Redirige a la página de inventario
+

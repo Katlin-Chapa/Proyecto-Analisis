@@ -7,9 +7,11 @@
 {% block content %}
     <div class="row" style="color: #4e4e4e; font-weight: bold; font-size: 3rem;">
         <div class="col-md-8">Lista de Inventario</div>
+        {% if perms.Inventario.Can_add_stock %}
         <div class="col-md-4">               
-            <div style="float:right;"> <a class="btn btn-success" href="#"><i class="bi bi-plus-circle"></i>  Agregar</a> </div>
+            <div style="float:right;"> <a class="btn btn-success" href="{% url 'agregar' %}"><i class="bi bi-plus-circle"></i>  Agregar</a> </div>
         </div>
+        {% endif %}
     </div>
     
     <div style="border-bottom: 1px solid white;"></div>
@@ -117,8 +119,34 @@
                                     </div>
                                 </div>
                             </div>
-                            <a href="#" class="btn btn-info btn-sm"><i class="bi bi-pencil-square"></i></a>
-                            <a href="#" class="btn btn-danger btn-sm"><i class="bi bi-trash3"></i></a>
+                            {% if perms.Inventario.Can_change_stock %}
+                            <a href="{% url 'modificar' stock.id %}" class="btn btn-info btn-sm"><i class="bi bi-pencil-square"></i></a>
+                            {% if endif %}
+                            {% if perms.Inventario.Can_delete_stock %}
+                            <!-- Modal para Confirmar Eliminación -->
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ stock.id }}">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                            
+                            <!-- Modal de Confirmación -->
+                            <div class="modal fade" id="confirmDeleteModal{{ stock.id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel{{ stock.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="confirmDeleteModalLabel{{ stock.id }}">Confirmar Eliminación</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            ¿Estás seguro de que deseas eliminar el producto "{{ stock.nombre }}"?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <a href="{% url 'eliminar_producto' stock.id %}" class="btn btn-danger">Eliminar</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}

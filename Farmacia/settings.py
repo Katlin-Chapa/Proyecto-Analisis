@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     'Inicio',
     'Inventario',
+    'Ventas',
 ]
 
 MIDDLEWARE = [
@@ -134,7 +135,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CRISPY_TEMPLATE_PACK = 'bootstrap5'   
 
 LOGIN_REDIRECT_URL = 'inicio'                          
-
 LOGIN_URL = 'login'                                     
 
 LOGIN_REQUIRED_IGNORE_VIEW_NAMES = [                    

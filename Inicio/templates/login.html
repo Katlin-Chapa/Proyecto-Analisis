@@ -25,7 +25,7 @@
         <div class="col-md-6">
             {% if user.is_authenticated %}
                 <br><br>
-                <h2 class="align-middle">You are already logged in, {{ request.user.username }}!</h2>
+                <h2 class="align-middle">Estas autenticado, {{ request.user.username }}!</h2>
                 <div class="border-top pt-3 align-middle"> <br>
                     <a class="btn ghost-blue" href="{% url 'incio' %}">Regresar al inicio</a> <br><br>
                     <a class="btn ghost-red" href="{% url 'logout' %}">Cerrar sesión</a>
