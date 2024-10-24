@@ -26,3 +26,15 @@ class StockForm(forms.ModelForm):
     class Meta:
         model = Stock
         fields = ['nombre', 'cantidad', 'fecha_vencimiento', 'numero_documento', 'dosis', 'imagen', 'categoria']  # Incluye todos los campos relevantes
+
+from django import forms
+from .models import Lote, Stock
+
+class LoteForm(forms.ModelForm):
+    class Meta:
+        model = Lote
+        fields = ['stock', 'cantidad', 'numero_documento', 'fecha_vencimiento']
+
+    # Puedes agregar validaciones personalizadas aquí si es necesario
+
+

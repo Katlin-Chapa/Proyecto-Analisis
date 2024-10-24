@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %} Cargar Productos Anualmente {% endblock %}
+
+{% block content %}
+<div style="color:#575757; font-weight: bold; font-size: 3rem; border-bottom: 1px solid white;">Cargar Manual de Productos</div>
+<br>
+
+<form method="get" action="{% url 'cargar-productos' %}">
+    <input type="text" name="q" placeholder="Buscar por nombre de producto" value="{{ request.GET.q }}" class="form-control" style="width: 600px; display: inline-block;">
+    <button type="submit" class="btn btn-pink">Buscar</button>
+    <button id="clear-button" class="btn btn-warning"><i class="bi bi-stars"></i>  Limpiar Búsqueda</button>
+    <script>
+        document.getElementById("clear-button").onclick = function() {
+            document.querySelector('input[name="q"]').value = ''; 
+            // Redirigir a la misma página para refrescar la tabla
+            window.location.href = window.location.pathname; 
+        };
+    </script>
+</form>
+<br>
+
+<style>
+    .card-body {
+        text-align: center; 
+    }
+    .card-body img {
+        display: block; 
+        margin: 0 auto; 
+    }
+</style>
+
+<div class="row">
+    {% for producto in productos %}
+        <div class="col-md-4">
+            <div class="card mb-4">           
+                <div class="card-body">
+                    {% if producto.imagen %}
+                        <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" style="width: auto; height: 80px;">
+                        <p> </p>
+                    {% else %}
+                        <br><br><br><br>
+                    {% endif %}
+                    <h5 class="card-title">{{ producto.nombre }}</h5>
+                    <p class="card-text">Categoría: {{ producto.categoria }}</p>
+                    <button class="btn btn-primary" onclick="mostrarModal('{{ producto.pk }}', '{{ producto.nombre }}')">Agregar Cantidad</button>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalAgregarCantidad" tabindex="-1" aria-labelledby="modalAgregarCantidadLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAgregarCantidadLabel">Agregar Cantidad</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formLote" method="post" enctype="multipart/form-data" action="{% url 'crear_lote' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="stock" id="stock_id">
+                    <div class="mb-3">
+                        <label for="cantidad" class="form-label">Cantidad</label>
+                        <input type="number" class="form-control" name="cantidad" id="cantidad" min="1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="numero_documento" class="form-label">Número de Documento</label>
+                        <input type="text" class="form-control" name="numero_documento" id="numero_documento" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fecha_vencimiento" class="form-label">Fecha de Vencimiento</label>
+                        <input type="date" class="form-control" name="fecha_vencimiento" id="fecha_vencimiento" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Agregar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function mostrarModal(stockId, nombreProducto) {
+        document.getElementById('stock_id').value = stockId; // Asigna el ID del stock al input oculto
+        const modal = new bootstrap.Modal(document.getElementById('modalAgregarCantidad'));
+        modal.show(); // Muestra el modal
+    }
+</script>
+ 
+{% endblock %}

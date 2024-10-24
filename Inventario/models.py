@@ -21,3 +21,13 @@ class Stock(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+class Lote(models.Model):
+    stock = models.ForeignKey(Stock, related_name="lotes", on_delete=models.CASCADE)  # Relación con el medicamento
+    cantidad = models.IntegerField(default=1)  # Cantidad ingresada en este lote
+    numero_documento = models.CharField(max_length=50)  # Número de documento relacionado
+    fecha_vencimiento = models.DateField()  # Fecha de vencimiento de este lote
+    fecha_ingreso = models.DateField(auto_now_add=True)  # Fecha de ingreso del lote
+
+    def __str__(self):
+        return f"Lote de {self.cantidad} unidades de {self.stock.nombre}"
