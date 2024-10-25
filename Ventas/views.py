@@ -68,3 +68,4 @@ def get_stock_price(request, stock_id):
         return JsonResponse({'precio': stock.precio})
     except Stock.DoesNotExist:
         return JsonResponse({'error': 'Stock no encontrado'}, status=404)
+

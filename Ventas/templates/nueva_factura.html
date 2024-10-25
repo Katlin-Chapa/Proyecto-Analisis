@@ -84,6 +84,10 @@
                         </div>
                     {% endfor %}
                 </div>
+                <!-- El enlace "Agregar Más" se mantiene aquí solo una vez -->
+                <div style="text-align: right;">                    
+                    <a href="#" class="add-form-row">+ Agregar Más</a>
+                </div>
             </div>
 
             <br>
@@ -107,86 +111,112 @@
             };
         }
 
-        // Mantén el objeto de alerta
         var alertInstance = new custom_alert();
 
         document.addEventListener('DOMContentLoaded', function () {
-            const stockFields = document.querySelectorAll('.stock');
+    // Función para agregar los eventos necesarios a una fila
+    function addEventListenersToRow(row) {
+        const stockField = row.querySelector('.stock');
+        const precioUnitarioField = row.querySelector('[name$="precio_unitario"]');
+        const cantidadField = row.querySelector('[name$="cantidad"]');
+        const totalField = row.querySelector('[name$="precio_total"]');
 
-            stockFields.forEach(stockField => {
-                stockField.addEventListener('change', function () {
-                    const stockId = this.value;
-                    const precioUnitarioField = this.closest('.form-row').querySelector('[name$="precio_unitario"]');
+        if (stockField) {
+            stockField.addEventListener('change', function () {
+                const stockId = this.value;
 
-                    if (stockId) {
-                        fetch(`/api/stock/${stockId}/`)
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.precio) {
-                                    precioUnitarioField.value = data.precio;
-                                    updateTotal(this.closest('.form-row'));
-                                }
-                            })
-                            .catch(error => console.error('Error al obtener el precio:', error));
-                    } else {
-                        precioUnitarioField.value = '';
-                    }
-                });
-            });
-
-            // Actualiza el total al cambiar cantidad o precio unitario
-            function updateTotal(row) {
-                const cantidadField = row.querySelector('[name$="cantidad"]');
-                const precioUnitarioField = row.querySelector('[name$="precio_unitario"]');
-                const totalField = row.querySelector('[name$="precio_total"]');
-
-                const cantidad = parseFloat(cantidadField.value) || 0;
-                const precioUnitario = parseFloat(precioUnitarioField.value) || 0;
-                const total = cantidad * precioUnitario;
-
-                totalField.value = total.toFixed(2);
-            }
-
-            // Escucha los cambios en la cantidad
-            document.querySelectorAll('[name$="cantidad"]').forEach(cantidadField => {
-                cantidadField.addEventListener('change', function () {
-                    updateTotal(this.closest('.form-row'));
-                });
-            });
-
-            // Eliminar formulario
-            $(document).on('click', '.remove-form-row', function(e){
-                e.preventDefault();
-                const row = $(this).closest('.form-row');
-                const cantidadField = row.find('[name$="cantidad"]');
-                const stockId = row.find('.stock').val();
-                
-                if (confirm("¿Estás seguro de que deseas eliminar este producto?")) {
-                    row.remove();
-                    alertInstance.render('Producto eliminado');
-                }
-            });
-
-            // Monitorear el cambio en la cantidad para alertas de stock
-            document.querySelectorAll('[name$="cantidad"]').forEach(cantidadField => {
-                cantidadField.addEventListener('change', function () {
-                    const cantidad = parseFloat(this.value) || 0;
-                    const stockId = this.closest('.form-row').querySelector('.stock').value;
-                    
-                    // Aquí puedes agregar tu lógica de verificación de stock
+                if (stockId) {
                     fetch(`/api/stock/${stockId}/`)
                         .then(response => response.json())
                         .then(data => {
-                            if (cantidad > data.quantity) {
-                                alertInstance.render('Cantidad excede el stock disponible.');
-                                this.value = data.quantity; // Ajustar cantidad a stock disponible
-                                updateTotal(this.closest('.form-row'));
+                            if (data.precio) {
+                                precioUnitarioField.value = data.precio;
+                                updateTotal(row); // Actualizar el total de esta fila
                             }
                         })
-                        .catch(error => console.error('Error al verificar el stock:', error));
-                });
+                        .catch(error => console.error('Error al obtener el precio:', error));
+                } else {
+                    precioUnitarioField.value = '';
+                }
             });
+        }
+
+        if (cantidadField) {
+            cantidadField.addEventListener('change', function () {
+                updateTotal(row);
+            });
+        }
+    }
+
+    // Función para actualizar el total de una fila específica
+    function updateTotal(row) {
+        const cantidadField = row.querySelector('[name$="cantidad"]');
+        const precioUnitarioField = row.querySelector('[name$="precio_unitario"]');
+        const totalField = row.querySelector('[name$="precio_total"]');
+
+        const cantidad = parseFloat(cantidadField.value) || 0;
+        const precioUnitario = parseFloat(precioUnitarioField.value) || 0;
+        const total = cantidad * precioUnitario;
+
+        totalField.value = total.toFixed(2);
+    }
+
+    // Aplicar eventos a filas ya existentes al cargar la página
+    document.querySelectorAll('.form-row').forEach(row => {
+        addEventListenersToRow(row);
+    });
+
+    // Funcionalidad para agregar nuevas filas
+    let totalForms = parseInt($('#id_form-TOTAL_FORMS').val());
+    $(document).on('click', '.add-form-row', function(e) {
+        e.preventDefault();
+
+        // Clonar la última fila y limpiar sus valores
+        let newElement = $('.form-row:last').clone(true);
+        
+        newElement.find(':input').each(function() {
+            $(this).val('');
+            let name = $(this).attr('name');
+            if (name) {
+                name = name.replace(`-${totalForms - 1}-`, `-${totalForms}-`);
+                $(this).attr('name', name);
+            }
         });
+
+        // Aumentar el total de formularios
+        $('#id_form-TOTAL_FORMS').val(totalForms + 1);
+        
+        // Añadir la nueva fila al final del contenedor
+        $('#stockitem .panel-body').append(newElement);
+
+        // Eliminar el enlace anterior antes de agregar uno nuevo
+        $('#stockitem .add-form-row').remove();
+        $('<div style="text-align: right;"><a href="#" class="add-form-row">+ Agregar Más</a></div>').insertAfter(newElement);
+
+        // Añadir eventos a la nueva fila
+        addEventListenersToRow(newElement[0]);
+        
+        totalForms++;
+    });
+
+    // Funcionalidad para eliminar filas
+    $(document).on('click', '.remove-form-row', function(e){
+        e.preventDefault();
+        const row = $(this).closest('.form-row');
+
+        // Evitar borrar si es la única fila
+        if ($('.form-row').length <= 1) {
+            alertInstance.render('No puedes eliminar la única fila de productos.');
+            return false;
+        }
+
+        if (confirm("¿Estás seguro de que deseas eliminar este producto?")) {
+            row.remove();
+            alertInstance.render('Producto eliminado');
+        }
+    });
+});
+
     </script>
 
 {% endblock content %}
