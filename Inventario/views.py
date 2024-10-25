@@ -1,30 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import (
-    View,
-    CreateView, 
-    UpdateView
-)
-from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib import messages
-from .models import Stock
-from .forms import StockForm
+from django.views.generic import ListView
+from django.http import JsonResponse, HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+from .models import Stock, Lote, Categoria
+from .forms import StockForm, LoteForm
 from django_filters.views import FilterView
 from .filters import StockFilter
-
+from reportlab.pdfgen import canvas
+from openpyxl import Workbook
 
 class StockListView(FilterView):
     filterset_class = StockFilter
     queryset = Stock.objects.filter(es_eliminado=False)
     template_name = 'inventario.html'
 
-from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, View
-from django.http import JsonResponse
-from django.urls import reverse_lazy
-from .models import Stock, Lote
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
-import json
 
 class CargarProductosAnualmente(ListView):
     model = Stock
@@ -37,60 +27,46 @@ class CargarProductosAnualmente(ListView):
             return Stock.objects.filter(nombre__icontains=query, es_eliminado=False)
         return Stock.objects.filter(es_eliminado=False)
 
-from django.shortcuts import render, redirect
-from .forms import LoteForm
-from .models import Stock
 
 def crear_lote(request):
     if request.method == 'POST':
         form = LoteForm(request.POST)
         if form.is_valid():
             lote = form.save(commit=False)
-            # Asignar el stock desde el formulario
             stock_id = request.POST.get('stock')
-            lote.stock = Stock.objects.get(id=stock_id)
-            # Actualiza la cantidad del stock
+            lote.stock = get_object_or_404(Stock, id=stock_id)
             stock = lote.stock
-            stock.cantidad += lote.cantidad  # Actualiza la cantidad
-            stock.save()  # Guarda el stock actualizado
-            lote.save()  # Guarda el nuevo lote
-            return redirect('cargar-productos')  # Cambia esto por tu URL de éxito
+            stock.cantidad += lote.cantidad
+            stock.save()
+            lote.save()
+            return redirect('cargar-productos')
     else:
         form = LoteForm()
     
     return render(request, 'crear_lote.html', {'form': form})
 
-from django.http import JsonResponse
-from .models import Stock
 
 def obtener_lotes(request, stock_id):
-    stock = Stock.objects.filter(id=stock_id).first()
-    if stock:
-        lotes = stock.lotes.all()
-        data = [{'numero_documento': lote.numero_documento, 'fecha_vencimiento': lote.fecha_vencimiento} for lote in lotes]
-        return JsonResponse({'lotes': data})
-    return JsonResponse({'lotes': []})
+    stock = get_object_or_404(Stock, id=stock_id)
+    lotes = stock.lotes.all()
+    data = [{'numero_documento': lote.numero_documento, 'fecha_vencimiento': lote.fecha_vencimiento} for lote in lotes]
+    return JsonResponse({'lotes': data})
 
-
-from django.shortcuts import render, redirect
-from .models import Categoria, Stock
 
 def agregar_categoria_producto(request):
     if request.method == 'POST':
         if 'nombre_categoria' in request.POST:
-            # Procesar formulario de categoría
             nombre_categoria = request.POST.get('nombre_categoria')
             Categoria.objects.create(nombre=nombre_categoria)
-            return redirect('agregar')  # Redirigir después de agregar
+            return redirect('agregar')
         elif 'nombre_producto' in request.POST:
-            # Procesar formulario de producto
             nombre_producto = request.POST.get('nombre_producto')
             cantidad = request.POST.get('cantidad')
             precio = request.POST.get('precio')
             dosis = request.POST.get('dosis')
             numero_documento = request.POST.get('numero_documento')
             fecha_vencimiento = request.POST.get('fecha_vencimiento')
-            categoria = Categoria.objects.get(id=request.POST.get('categoria'))
+            categoria = get_object_or_404(Categoria, id=request.POST.get('categoria'))
             imagen = request.FILES.get('imagen')
 
             Stock.objects.create(
@@ -103,44 +79,29 @@ def agregar_categoria_producto(request):
                 categoria=categoria,
                 imagen=imagen
             )
-            return redirect('agregar')  # Redirigir después de agregar
+            return redirect('agregar')
 
     categorias = Categoria.objects.all()
     return render(request, 'agregar.html', {'categorias': categorias})
 
-
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Stock, Categoria
 
 def modificar_producto(request, id):
     stock = get_object_or_404(Stock, id=id)
     categorias = Categoria.objects.all()
 
     if request.method == 'POST':
-        # Obtener los datos del formulario
-        nombre = request.POST.get('nombre')
-        cantidad = request.POST.get('cantidad')
-        precio = request.POST.get('precio')
-        dosis = request.POST.get('dosis')
-        categoria_id = request.POST.get('categoria')
+        stock.nombre = request.POST.get('nombre')
+        stock.cantidad = request.POST.get('cantidad')
+        stock.precio = request.POST.get('precio')
+        stock.dosis = request.POST.get('dosis')
+        stock.categoria_id = request.POST.get('categoria')
         imagen = request.FILES.get('imagen')
 
-        # Actualizar solo los campos que se pueden modificar
-        stock.nombre = nombre
-        stock.cantidad = cantidad
-        stock.precio = precio
-        stock.dosis = dosis
-        stock.categoria_id = categoria_id
-
-        # Si se proporciona una nueva imagen, actualizarla
         if imagen:
             stock.imagen = imagen
 
-        # Guardar los cambios en el modelo
         stock.save()
-
-        # Redirigir a la lista de inventario u otra vista
-        return redirect('inventario')  # Cambia esto según tu URL de lista de inventario
+        return redirect('inventario')
 
     context = {
         'stock': stock,
@@ -148,15 +109,80 @@ def modificar_producto(request, id):
     }
     return render(request, 'modificar.html', context)
 
-# views.py
-from django.shortcuts import redirect, get_object_or_404
-from django.urls import reverse
-from .models import Stock  # Asegúrate de importar tu modelo
-from django.contrib.auth.decorators import login_required
 
 @login_required
 def eliminar_producto(request, stock_id):
     producto = get_object_or_404(Stock, id=stock_id)
     producto.delete()
-    return redirect(reverse('inventario'))  # Redirige a la página de inventario
+    return redirect(reverse('inventario'))
+
+
+def generar_pdf(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="stock.pdf"'
+    p = canvas.Canvas(response)
+
+    p.drawString(100, 800, "Listado de Stock")
+    y = 750
+    for stock in Stock.objects.all():
+        p.drawString(100, y, f"Nombre: {stock.nombre}, Cantidad: {stock.cantidad}, Precio: {stock.precio}")
+        y -= 20
+
+    p.showPage()
+    p.save()
+    return response
+
+
+def generar_excel(request):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Stock"
+    ws.append(['Nombre', 'Cantidad', 'Precio', 'Fecha de Vencimiento'])
+
+    for stock in Stock.objects.all():
+        ws.append([stock.nombre, stock.cantidad, stock.precio, stock.fecha_vencimiento])
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="stock.xlsx"'
+    wb.save(response)
+    return response
+
+
+def generar_lote_pdf(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="lote.pdf"'
+    p = canvas.Canvas(response)
+
+    p.drawString(100, 800, "Listado de Lotes")
+    y = 750
+    for lote in Lote.objects.all():
+        p.drawString(100, y, f"Stock: {lote.stock.nombre}, Cantidad: {lote.cantidad}, Documento: {lote.numero_documento}, Fecha Vencimiento: {lote.fecha_vencimiento}")
+        y -= 20
+
+    p.showPage()
+    p.save()
+    return response
+
+
+def generar_lote_excel(request):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Lotes"
+    ws.append(['Stock', 'Cantidad', 'Documento', 'Fecha de Vencimiento'])
+
+    for lote in Lote.objects.all():
+        ws.append([lote.stock.nombre, lote.cantidad, lote.numero_documento, lote.fecha_vencimiento])
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="lotes.xlsx"'
+    wb.save(response)
+    return response
+
+def reportes_view(request):
+    # Obtener todos los stock que no están eliminados
+    stocks = Stock.objects.filter(es_eliminado=False)
+    # Obtener todos los lotes
+    lotes = Lote.objects.all()
+    # Renderizar la plantilla y pasar los datos
+    return render(request, 'reportes.html', {'stocks': stocks, 'lotes': lotes})
 
