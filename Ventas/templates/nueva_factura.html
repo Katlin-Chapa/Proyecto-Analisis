@@ -93,13 +93,29 @@
             <br>
 
             <div class="align-middle">
-                <button type="submit" class="btn btn-success">Pagar</button>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#paymentModal">Pagar</button>
                 <a href="{% url 'ventas-lista' %}" class="btn btn-secondary">Cancelar</a>
-            </div>
-            
+            </div>          
         </div>
 
     </form>
+
+<!-- Modal de Pago -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentModalLabel">Selecciona Método de Pago</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <button id="payCash" class="btn btn-success">Efectivo</button>
+                <button id="payCard" class="btn btn-primary">Tarjeta</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
     <!-- JavaScript personalizado para agregar y eliminar formularios -->
     <script type="text/javascript" src="{% static 'js/jquery-3.2.1.slim.min.js' %}"></script>
@@ -216,7 +232,33 @@
         }
     });
 });
-
     </script>
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        // Evento para el botón "Efectivo"
+        document.getElementById('payCash').addEventListener('click', function () {
+            // Lógica para guardar la venta en efectivo
+            const form = document.querySelector('form');
+            const formData = new FormData(form);
+
+            fetch('/efectivo/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'  // Asegúrate de que la plantilla tenga acceso a {
+                },
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Venta guardada en efectivo.');
+                    location.reload();  // Recargar la página o redirigir
+                } else {
+                    alert('Error al guardar la venta en efectivo.');
+                }
+            });
+        });
+    });
+</script>
+
 
 {% endblock content %}

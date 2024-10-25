@@ -69,3 +69,53 @@ def get_stock_price(request, stock_id):
     except Stock.DoesNotExist:
         return JsonResponse({'error': 'Stock no encontrado'}, status=404)
 
+# views.py
+from django.views import View
+from django.http import JsonResponse
+from .models import Factura, Venta
+
+class GuardarVentaView(View):
+    def post(self, request):
+        print(request.POST)  # Para depuración
+
+        # Crear la factura
+        factura = Factura(
+            nombre=request.POST.get('nombre'),
+            telefono=request.POST.get('telefono'),
+            correo_electronico=request.POST.get('correo_electronico'),
+            direccion=request.POST.get('direccion'),
+            nit=request.POST.get('nit')
+        )
+        factura.save()  # Guardamos la factura
+
+        # Obtener total_items con un valor por defecto de 0
+        total_items = request.POST.get('total_items', '0')
+
+        # Asegurarse de que sea un entero antes de usarlo
+        try:
+            total_items = int(total_items)
+        except ValueError:
+            return JsonResponse({'success': False, 'error': 'total_items inválido'})
+
+        # Crear las ventas asociadas
+        for i in range(total_items):
+            stock_id = request.POST.get(f'stock_{i}')
+            cantidad = request.POST.get(f'cantidad_{i}')
+
+            if stock_id and cantidad:
+                try:
+                    cantidad = int(cantidad)
+                    stock = Stock.objects.get(id=stock_id)  # Asegúrate de que el stock existe
+
+                    # Crear la venta con el precio unitario obtenido del stock
+                    venta = Venta(
+                        factura=factura,
+                        stock=stock,
+                        cantidad=cantidad,
+                        precio_unitario=stock.precio  # Asignar el precio unitario aquí
+                    )
+                    venta.save()  # Guardar la venta
+                except (Stock.DoesNotExist, ValueError):
+                    return JsonResponse({'success': False, 'error': 'stock o cantidad inválido'})
+
+        return JsonResponse({'success': True})
