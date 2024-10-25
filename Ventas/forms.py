@@ -5,11 +5,11 @@ from .models import Factura, Venta, Stock  # Asegúrate de importar tus modelos 
 class FacturaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['nombre'].widget.attrs.update({'class': 'textinput form-control', 'maxlength': '150', 'required': 'true'})
-        self.fields['telefono'].widget.attrs.update({'class': 'textinput form-control', 'maxlength': '10', 'pattern': '[0-9]{10}', 'title': 'Números solamente'})
+        self.fields['nombre'].widget.attrs.update({'class': 'textinput form-control', 'maxlength': '150'})
+        self.fields['telefono'].widget.attrs.update({'class': 'textinput form-control', 'maxlength': '8','title': 'Números solamente'})
         self.fields['direccion'].widget.attrs.update({'class': 'textinput form-control', 'maxlength': '200'})
         self.fields['correo_electronico'].widget.attrs.update({'class': 'textinput form-control'})
-        self.fields['nit'].widget.attrs.update({'class': 'textinput form-control', 'pattern': '[0-9]+', 'title': 'Números solamente'})
+        self.fields['nit'].widget.attrs.update({'class': 'textinput form-control', 'maxlength': '5', 'title': 'Números solamente'})
 
     class Meta:
         model = Factura

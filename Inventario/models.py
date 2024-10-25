@@ -10,7 +10,7 @@ class Stock(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100, unique=True)  # Nombre del medicamento
     cantidad = models.IntegerField(default=1)  # Cantidad disponible
-    precio = models.DecimalField(max_digits=10, decimal_places=2)  # Precio del medicamento
+    precio = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Precio del medicamento
     fecha_vencimiento = models.DateField()  # Fecha de vencimiento
     fecha_ingreso = models.DateField(auto_now_add=True)  # Fecha de ingreso al inventario
     numero_documento = models.CharField(max_length=50, blank=True, null=True)  # Número del documento relacionado

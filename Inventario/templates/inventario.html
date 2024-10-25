@@ -121,7 +121,7 @@
                             </div>
                             {% if perms.Inventario.Can_change_stock %}
                             <a href="{% url 'modificar' stock.id %}" class="btn btn-info btn-sm"><i class="bi bi-pencil-square"></i></a>
-                            {% if endif %}
+                            {% endif %}
                             {% if perms.Inventario.Can_delete_stock %}
                             <!-- Modal para Confirmar Eliminación -->
                             <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ stock.id }}">
