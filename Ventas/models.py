@@ -4,7 +4,7 @@ from Inventario.models import Stock
 # Contiene las facturas de ventas realizadas
 class Factura(models.Model):
     numero = models.AutoField(primary_key=True)
-    tiempo = models.DateField(auto_now_add=True)
+    fecha = models.DateField(auto_now_add=True)
     nombre = models.CharField(max_length=150, blank=True, null=True)
     telefono = models.IntegerField(blank=True, null=True)
     direccion = models.CharField(max_length=200, blank=True, null=True)

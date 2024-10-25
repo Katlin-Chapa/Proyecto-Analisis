@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+
+{% block title %} Lista de Facturas {% endblock title %}
+
+{% block content %}
+    
+    <div class="row" style="color: #575757; font-weight: bold; font-size: 3rem;">
+        <div class="col-md-8">Lista de Facturas</div>
+        <div class="col-md-4">               
+            <div style="float:right;"> <a class="btn btn-success" href="{% url 'venta' %}">Nueva Factura</a> </div>
+        </div>
+    </div>
+    
+    <br>
+
+    <table class="table table-css table-bordered table-hover"> 
+            
+        <thead class="thead-dark align-middle">
+            <tr>
+                <th width="10%">N° de Factura</th>
+                <th width="15%">Cliente</th>
+                <th width="15%">Artículos Vendidos</th>
+                <th width="10%">Cantidad Vendida</th>
+                <th width="10%">Precio Total</th>
+                <th width="15%">Fecha</th>
+                <th width="25%">Acciones</th>
+            </tr>
+        </thead>
+
+        {% if facturas %}
+
+        <tbody>
+            {% for factura in facturas %}
+            <tr>
+                <td class="align-middle"> <p>{{ factura.numero }}</p> </td>
+                <td class=""> {{ factura.nombre }} <br> <small style="color: #909494">Teléfono: {{ factura.telefono }}</small> </td>
+                <td class="align-middle">{% for item in factura.obtener_lista_items %} {{ item.stock.nombre }} <br> {% endfor %}</td>
+                <td class="align-middle">{% for item in factura.obtener_lista_items %} {{ item.cantidad }} <br> {% endfor %}</td>     
+                <td class="align-middle">${{ factura.obtener_precio_total }}</td>
+                <td class="align-middle">{{ factura.fecha }}</td>
+                <td class="align-middle">
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+ 
+{% else %}
+
+        <tbody></tbody>
+    </table>
+
+    <br><br><br><br><br><br><br><br>
+    <div style="color: #575757; font-weight: bold; font-size: 1.5rem; text-align: center;">No hay registros. Por favor, intenta agregar algunos.</div>
+
+{% endif %}
+
+{% endblock content %}
