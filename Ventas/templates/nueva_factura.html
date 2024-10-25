@@ -29,12 +29,12 @@
                 {{ form.nombre }}                
             </div>
             <div class="form-row">
-                    <label for="{{ form.telefono.id_for_label }}" class="panel-body-text">Teléfono:</label>
-                    {{ form.telefono }}
+                <label for="{{ form.telefono.id_for_label }}" class="panel-body-text">Teléfono:</label>
+                {{ form.telefono }}
             </div>
             <div class="form-row">              
-                    <label for="{{ form.correo_electronico.id_for_label }}" class="panel-body-text">Correo Electrónico:</label>
-                    {{ form.correo_electronico }}
+                <label for="{{ form.correo_electronico.id_for_label }}" class="panel-body-text">Correo Electrónico:</label>
+                {{ form.correo_electronico }}
             </div>
         
             <div class="form-row">
@@ -57,42 +57,39 @@
             
             <div id="stockitem"> 
                 <div class="panel-body">
-                {% for iform in formset %}
-                    <div class="row form-row">
-                        <div class="form-group col-md-6">
-                            {{ iform.stock.errors }}
-                            <label class="panel-body-text">Producto:</label>
-                            {{ iform.stock }}
+                    {% for iform in formset %}
+                        <div class="row form-row">
+                            <div class="form-group col-md-3">
+                                {{ iform.stock.errors }}
+                                <label class="panel-body-text">Producto:</label>
+                                {{ iform.stock }}
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="panel-body-text">Precio:</label>
+                                <input type="text" class="textinput form-control" name="{{ iform.precio_unitario.name }}" value="{{ iform.precio_unitario.value }}" readonly>
+                            </div>
+                            <div class="form-group col-md-2">
+                                {{ iform.cantidad.errors }}
+                                <label class="panel-body-text">Cantidad:</label>
+                                {{ iform.cantidad }}
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label class="panel-body-text">Total:</label>
+                                <input type="text" class="textinput form-control totalprice" name="{{ iform.precio_total.name }}" value="{{ iform.precio_total.value }}" readonly required>
+                            </div>
+                            <div class="form-group col-md-1">
+                                <label class="panel-body-text" style="color: #000">.</label>
+                                <button class="form-control btn btn-danger remove-form-row" type="button"><i class="bi bi-trash3"></i></button>
+                            </div>
                         </div>
-                        <div class="form-group col-md-2">
-                            <label class="panel-body-text">Precio:</label>
-                            <input type="text" class="textinput form-control" name="{{ iform.perprice.name }}" value="{{ iform.perprice.value }}" readonly>
-                        </div>
-                        <div class="form-group col-md-2">
-                            {{ iform.quantity.errors }}
-                            <label class="panel-body-text">Cantidad:</label>
-                            {{ iform.quantity }}
-                        </div>
-                        <div class="form-group col-md-1">
-                            <label class="panel-body-text">Total:</label>
-                            <input type="text" class="textinput form-control totalprice" value="0" disabled required>
-                        </div>
-                        <div class="form-group col-md-1">
-                            <label class="panel-body-text" style="color: #000">.</label>
-                            <button class="form-control btn btn-danger remove-form-row">-</button>
-                        </div>
-                    </div>
-                {% endfor %}
-                    <div style="text-align: right;">                    
-                        <a href="#" class="add-form-row">+ Agregar Más</a>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
 
             <br>
 
             <div class="align-middle">
-                <button type="submit" class="btn btn-success">Agregar a Ventas</button>
+                <button type="submit" class="btn btn-success">Pagar</button>
                 <a href="{% url 'ventas-lista' %}" class="btn btn-secondary">Cancelar</a>
             </div>
             
@@ -102,106 +99,94 @@
 
     <!-- JavaScript personalizado para agregar y eliminar formularios -->
     <script type="text/javascript" src="{% static 'js/jquery-3.2.1.slim.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/dialogbox.js' %}"></script>
     <script type="text/javascript">
-        
         // Crea un objeto de alerta personalizado
-        var custom_alert = new custom_alert();
-
-        function updateElementIndex(el, prefix, ndx) {
-            var id_regex = new RegExp('(' + prefix + '-\\d+)');
-            var replacement = prefix + '-' + ndx;
-            if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
-            if (el.id) el.id = el.id.replace(id_regex, replacement);
-            if (el.name) el.name = el.name.replace(id_regex, replacement);
+        function custom_alert() {
+            this.render = function(message) {
+                alert(message);  // Puedes personalizar esto para usar un modal o un div
+            };
         }
-        
-        var total = 1;
 
-        function cloneMore(selector, prefix) {
-            var newElement = $(selector).clone(true);
-            newElement.find(':input:not([type=button]):not([type=submit]):not([type=reset])').each(function() {
-                var name = $(this).attr('name')
-                if(name) {
-                    name = name.replace('-' + (total-1) + '-', '-' + total + '-');
-                    var id = 'id_' + name;
-                    $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
-                }
-            });
-            newElement.find('label').each(function() {
-                var forValue = $(this).attr('for');
-                if (forValue) {
-                    forValue = forValue.replace('-' + (total-1) + '-', '-' + total + '-');
-                    $(this).attr({'for': forValue});
-                }
-            });
-            total++;
-            $('#id_' + prefix + '-TOTAL_FORMS').val(total);
-            $(selector).after(newElement);
-            return false;
-        }
-        
-        function deleteForm(prefix, btn) {
-            if (total > 1){
-                btn.closest('.form-row').remove();
-                var forms = $('.form-row');
-                $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
-                for (var i=0, formCount=forms.length; i<formCount; i++) {
-                    $(forms.get(i)).find(':input').each(function() {
-                        updateElementIndex(this, prefix, i);
-                    });
-                }
-                total--;
-            } else {
-                custom_alert.render('No se puede eliminar el campo');
-            }
-            return false;
-        }
-        
-        $(document).on('click', '.add-form-row', function(e){
-            e.preventDefault();
-            cloneMore('.form-row:last', 'form');
-            return false;
-        });
-        
-        $(document).on('click', '.remove-form-row', function(e){
-            e.preventDefault();
-            deleteForm('form', $(this));
-            return false;
-        });
+        // Mantén el objeto de alerta
+        var alertInstance = new custom_alert();
 
-        
-        
-        // Actualiza el precio total multiplicando 'precio por artículo' y 'cantidad' 
-        $(document).on('change', '.setprice', function(e){
-            e.preventDefault();
-            var element = $(this);
-            var stock = element.parents('.form-row').find('.stock').val();
-            var quantity = element.parents('.form-row').find('.quantity').val();
-            var perprice = element.parents('.form-row').find('.price').val();
-            stocks.forEach(function(stockSummary, i) {
-                var pk = stocks[i].pk;
-                var squantity = stocks[i].quantity;
-                if(stock == pk) {
-                    if(quantity > squantity){
-                        quantity = quantity - 1;
-                        if(quantity <= 1){
-                            custom_alert.render('Stocks no disponibles. El campo será eliminado;');
-                            element.parents('.form-row').find('.quantity').val(0);
-                            deleteForm('form', element);
-                        } else {
-                            element.parents('.form-row').find('.quantity').val(squantity - 1);
-                            quantity = squantity - 1;
-                            custom_alert.render('Se excedió el stock disponible');
-                        }
+        document.addEventListener('DOMContentLoaded', function () {
+            const stockFields = document.querySelectorAll('.stock');
+
+            stockFields.forEach(stockField => {
+                stockField.addEventListener('change', function () {
+                    const stockId = this.value;
+                    const precioUnitarioField = this.closest('.form-row').querySelector('[name$="precio_unitario"]');
+
+                    if (stockId) {
+                        fetch(`/api/stock/${stockId}/`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.precio) {
+                                    precioUnitarioField.value = data.precio;
+                                    updateTotal(this.closest('.form-row'));
+                                }
+                            })
+                            .catch(error => console.error('Error al obtener el precio:', error));
+                    } else {
+                        precioUnitarioField.value = '';
                     }
-                }
-            });     
-            var tprice = quantity * perprice;
-            element.parents('.form-row').find('.totalprice').val(tprice);
-            return false;
-        });
+                });
+            });
 
+            // Actualiza el total al cambiar cantidad o precio unitario
+            function updateTotal(row) {
+                const cantidadField = row.querySelector('[name$="cantidad"]');
+                const precioUnitarioField = row.querySelector('[name$="precio_unitario"]');
+                const totalField = row.querySelector('[name$="precio_total"]');
+
+                const cantidad = parseFloat(cantidadField.value) || 0;
+                const precioUnitario = parseFloat(precioUnitarioField.value) || 0;
+                const total = cantidad * precioUnitario;
+
+                totalField.value = total.toFixed(2);
+            }
+
+            // Escucha los cambios en la cantidad
+            document.querySelectorAll('[name$="cantidad"]').forEach(cantidadField => {
+                cantidadField.addEventListener('change', function () {
+                    updateTotal(this.closest('.form-row'));
+                });
+            });
+
+            // Eliminar formulario
+            $(document).on('click', '.remove-form-row', function(e){
+                e.preventDefault();
+                const row = $(this).closest('.form-row');
+                const cantidadField = row.find('[name$="cantidad"]');
+                const stockId = row.find('.stock').val();
+                
+                if (confirm("¿Estás seguro de que deseas eliminar este producto?")) {
+                    row.remove();
+                    alertInstance.render('Producto eliminado');
+                }
+            });
+
+            // Monitorear el cambio en la cantidad para alertas de stock
+            document.querySelectorAll('[name$="cantidad"]').forEach(cantidadField => {
+                cantidadField.addEventListener('change', function () {
+                    const cantidad = parseFloat(this.value) || 0;
+                    const stockId = this.closest('.form-row').querySelector('.stock').value;
+                    
+                    // Aquí puedes agregar tu lógica de verificación de stock
+                    fetch(`/api/stock/${stockId}/`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (cantidad > data.quantity) {
+                                alertInstance.render('Cantidad excede el stock disponible.');
+                                this.value = data.quantity; // Ajustar cantidad a stock disponible
+                                updateTotal(this.closest('.form-row'));
+                            }
+                        })
+                        .catch(error => console.error('Error al verificar el stock:', error));
+                });
+            });
+        });
     </script>
 
 {% endblock content %}

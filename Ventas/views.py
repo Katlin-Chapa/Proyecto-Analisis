@@ -12,7 +12,6 @@ class FacturaView(ListView):
     ordering = ['-fecha']
     paginate_by = 10
 
-
 # Vista para generar una nueva factura y guardar los artículos vendidos
 class VentaView(View):
     template_name = 'nueva_factura.html'
@@ -56,6 +55,16 @@ class VentaView(View):
         context = {
             'form': form,
             'formset': formset,
-            'stocks': Stock.objects.filter(is_deleted=False),  # Vuelve a obtener stocks para mostrar
+            'stocks': Stock.objects.filter(es_eliminado=False),  # Vuelve a obtener stocks para mostrar
         }
         return render(request, self.template_name, context)
+
+from django.http import JsonResponse
+from .models import Stock
+
+def get_stock_price(request, stock_id):
+    try:
+        stock = Stock.objects.get(id=stock_id)
+        return JsonResponse({'precio': stock.precio})
+    except Stock.DoesNotExist:
+        return JsonResponse({'error': 'Stock no encontrado'}, status=404)
