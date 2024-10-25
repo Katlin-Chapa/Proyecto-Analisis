@@ -13,11 +13,11 @@ from .views import (
 )
 
 urlpatterns = [
-    path('inventario/', StockListView.as_view(), name='inventario'),
-    path('cargar/', CargarProductosAnualmente.as_view(), name='cargar-productos'),  # Página para cargar productos
+    path('inventario/', views.StockListView.as_view(), name='inventario'),
+    path('cargar/', views.CargarProductosAnualmente.as_view(), name='cargar-productos'),  # Página para cargar productos
     path('crear-lote/', crear_lote, name='crear_lote'),
-    path('agregar/', agregar_categoria_producto, name='agregar_categoria'),
-    path('modificar/<int:id>/', modificar_producto, name='modificar_producto'),
+    path('agregar/', views.agregar_categoria_producto, name='agregar'),
+    path('modificar/<int:id>/', views.modificar_producto, name='modificar'),
     path('eliminar/<int:stock_id>/', eliminar_producto, name='eliminar_producto'),
     
     # Rutas para generar reportes de Stock
