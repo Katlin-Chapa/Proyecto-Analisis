@@ -40,7 +40,7 @@
 
             <ul class="list-unstyled sidebar-components">
                 <li> 
-                    <a class="sidebar-text sidebar-button" href="{% url 'inicio' %}"><i class="bi bi-house-door"></i></i>   Inicio</a>
+                    <a class="sidebar-text sidebar-button" href="{% url 'inicio' %}"><i class="bi bi-house-door"></i>   Inicio</a>
                 </li>               
                 <li>
                     <a href="#inventarioSubmenu" data-bs-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button">
@@ -53,20 +53,16 @@
                 </li>
                 <li>
                     <a href="#ventasSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="bi bi-cart3"></i>   Ventas</a>
-                    
                 </li>
                 <li>
-                    <a class="sidebar-text sidebar-button" href="{% url 'reportes' %}" ><i class="bi bi-receipt-cutoff"></i>   Reportes</a>
-
+                    <a class="sidebar-text sidebar-button" href="{% url 'reportes' %}"><i class="bi bi-receipt-cutoff"></i>   Reportes</a>
                 </li>
                 <li>
                     <a href="#cierreSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="bi bi-cash-stack"></i>   Cierre de caja</a>
-                   
                 </li>
                 {% if user.is_staff %}
                 <li>
-                    <a href="#usuariosSubmenu" data-toggle="collapse" class="dropdown-toggle sidebar-text right-arrow sidebar-button"><i class="bi bi-people"></i>   Usuarios</a>
-                   
+                    <a class="sidebar-text sidebar-button" href="{% url 'gestionar_usuarios' %}"><i class="bi bi-people"></i>   Usuarios</a>
                 </li>
                 {% endif %}
                 <li>

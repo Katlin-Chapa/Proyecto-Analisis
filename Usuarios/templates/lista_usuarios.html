@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %} Usuarios {% endblock title %}
+
+{% block content %}
+<div class="row" style="color: #4e4e4e; font-weight: bold; font-size: 3rem;">
+    <div class="col-md-8">Lista Usuarios</div> 
+</div>
+<h1 style="text-align: center; font-size: 2rem; margin-bottom: 20px;">Usuarios Existentes</h1>
+
+<table style="width: 100%; border-collapse: collapse; margin: auto;">
+    <thead>
+        <tr>
+            <th style="padding: 12px; background-color: #f8f9fa; border: 1px solid #dee2e6; width: 15%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Nombre</th>
+            <th style="padding: 12px; background-color: #f8f9fa; border: 1px solid #dee2e6; width: 15%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td style="padding: 10px; border: 1px solid #dee2e6;">{{ user.username }}</td>
+            <td style="padding: 10px; border: 1px solid #dee2e6;">
+                <form action="{% url 'eliminar_usuario' user.id %}" method="post" style="display:inline;" onsubmit="return confirmDelete('{{ user.username }}');">
+                    {% csrf_token %}
+                    <button type="submit" style="background-color: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s;">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2" style="padding: 10px; text-align: center; color: #6c757d; font-style: italic;">No hay usuarios disponibles.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    function confirmDelete(username) {
+        return confirm("¿Estás seguro de que deseas eliminar al usuario " + username + "?");
+    }
+</script>
+
+{% endblock content %}
